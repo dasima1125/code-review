@@ -1,3 +1,4 @@
+package test;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class test {
             }
             else if("등록".equals(command))
             {
+                명령_등록(data, count , sc);
+                /**
                 count++;
                 System.out.print("명언 : ");
                 String insert_data_1 = sc.nextLine();
@@ -35,21 +38,19 @@ public class test {
                 String insert_data_2 = sc.nextLine();
                 System.out.println(count+"번 명언이 등록되었습니다.");
                 
-                data.add(0,new Data(count, insert_data_1, insert_data_2));
-                
-                /** 
+                data.add(0,new Data(count, insert_data_1, insert_data_2)); 
                 fileMaker_Json_single(count);
                 fileWriter_Json_single(count, insert_data_1, insert_data_2);
                 fileWriter_lastID(count);
                 */
-
             }
             else if("목록".equals(command))
             {   
+                명령_목록(data, sc);
+                /**
                 System.out.println("번호 / 작가 / 명언\n----------------------");
                 for (Data d : data) { d.printData(); }
-                
-                /** 
+
                 File directory = new File("db/wiseSaying");
                 File[] files = directory.listFiles();
 
@@ -65,16 +66,20 @@ public class test {
             }
             else if("빌드".equals(command))
             {
+                명령_커밋(data, count);
+                /** 
                 fileWriter_Json_alpha(data);
                 fileWriter_lastID(count);//덮어쓰고 재갱신
                 data.clear();
 
                 fileReader_Json_alpha(data);
                 count = fileReader_lastID();
-                
+                */
             }
             else if (command.startsWith("삭제?id=")) 
             {
+                명령_삭제(data, command); 
+                /**
                 int     number = Integer.parseInt(command.substring("삭제?id=".length())); 
                 boolean found  = false; //확인용
           
@@ -91,15 +96,16 @@ public class test {
                 if (!found) {
                     System.out.println(number + "번 명언은 존재하지 않습니다.");
                 }
-                /** 
+
                 int     number = Integer.parseInt(command.substring("삭제?id=".length())); 
                 fileDelete("db/wiseSaying/"+number+".json");
                 */
-                
             }
 
             else if(command.startsWith("수정?id="))
             {
+                명령_수정(data, command, sc);
+                /**
                 int number = Integer.parseInt(command.substring("수정?id=".length())); 
                 boolean found  = false; //확인용
 
@@ -122,15 +128,15 @@ public class test {
                     }
                 }
 
-                if (!found) {
-                    System.out.println(number + "번 명언은 존재하지 않습니다.");
-                }
-                /** 
+                if (!found) { System.out.println(number + "번 명언은 존재하지 않습니다."); }
+
                 fileModify_Json_single("db/wiseSaying/"+number+".json",sc);
                 */
             }
             else if ("초기화".equals(command)) 
-            {
+            {   
+                명령_초기화(data, command, count);
+                /** 
                 File directory = new File("db/wiseSaying");
                 if (directory.isDirectory()) 
                 {
@@ -143,7 +149,7 @@ public class test {
                 fileMaker_ID();
                 count = fileReader_lastID();
                 System.out.println("초기화 완료.");
-                
+                */
             }
             else { System.out.println("잘못된 명령입니다."); }
         }
@@ -533,7 +539,7 @@ public class test {
 
     /////////////////////////////////명령어 함수 저장공간//////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////
-    void 명령_등록(List<Data> data ,int count ,Scanner sc)
+    static void 명령_등록(List<Data> data ,int count ,Scanner sc)
     {
         count++;
         System.out.print("명언 : ");
@@ -544,49 +550,83 @@ public class test {
                 
         data.add(0,new Data(count, insert_data_1, insert_data_2));
     }
-    void 명령_목록(List<Data> data ,int count ,Scanner sc)
+    
+    static void 명령_목록(List<Data> data ,Scanner sc)
     {
-        count++;
-        System.out.print("명언 : ");
-        String insert_data_1 = sc.nextLine();
-        System.out.print("작가 : ");
-        String insert_data_2 = sc.nextLine();
-        System.out.println(count+"번 명언이 등록되었습니다.");
-                
-        data.add(0,new Data(count, insert_data_1, insert_data_2));
+        System.out.println("번호 / 작가 / 명언\n----------------------");
+                for (Data d : data) { d.printData(); }
     }
-    void 명령_삭제(List<Data> data ,int count ,Scanner sc)
+
+    static void 명령_삭제(List<Data> data, String command)
     {
-        count++;
-        System.out.print("명언 : ");
-        String insert_data_1 = sc.nextLine();
-        System.out.print("작가 : ");
-        String insert_data_2 = sc.nextLine();
-        System.out.println(count+"번 명언이 등록되었습니다.");
-                
-        data.add(0,new Data(count, insert_data_1, insert_data_2));
+        int number = Integer.parseInt(command.substring("삭제?id=".length())); 
+        boolean found  = false; //확인용
+          
+        for (int i = 0; i < data.size(); i++) 
+        {
+            if (data.get(i).number == number) 
+            {
+                System.out.println(number + "번 명언이 삭제되었습니다.");
+                data.remove(i);  // 해당 명언 삭제
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) { System.out.println(number + "번 명언은 존재하지 않습니다."); }
     }
-    void 명령_수정(List<Data> data ,int count ,Scanner sc)
+
+    static void 명령_수정(List<Data> data, String command, Scanner sc)
     {
-        count++;
-        System.out.print("명언 : ");
-        String insert_data_1 = sc.nextLine();
-        System.out.print("작가 : ");
-        String insert_data_2 = sc.nextLine();
-        System.out.println(count+"번 명언이 등록되었습니다.");
-                
-        data.add(0,new Data(count, insert_data_1, insert_data_2));
+        int number = Integer.parseInt(command.substring("수정?id=".length())); 
+        boolean found  = false; //확인용
+
+        for (int i = 0; i < data.size(); i++) 
+        {
+            if (data.get(i).number == number) 
+            {
+                System.out.println("명언(기존) : " + data.get(i).content);
+                System.out.print("명언 : ");
+                String insert_data_1 = sc.nextLine();
+                        
+                System.out.println("작가(기존) : " + data.get(i).author);
+                System.out.print("작가 : ");
+                String insert_data_2 = sc.nextLine();
+
+                data.set(i, new Data(number, insert_data_1, insert_data_2));
+                found = true;
+                        
+                break;
+            }
+        }
+
+        if (!found) { System.out.println(number + "번 명언은 존재하지 않습니다."); }
     }
-    void 명령_커밋(List<Data> data ,int count ,Scanner sc)
+
+    static void 명령_커밋(List<Data> data ,int count)
     {
-        count++;
-        System.out.print("명언 : ");
-        String insert_data_1 = sc.nextLine();
-        System.out.print("작가 : ");
-        String insert_data_2 = sc.nextLine();
-        System.out.println(count+"번 명언이 등록되었습니다.");
-                
-        data.add(0,new Data(count, insert_data_1, insert_data_2));
+        fileWriter_Json_alpha(data);
+        fileWriter_lastID(count);//덮어쓰고 재갱신
+        data.clear();
+
+        fileReader_Json_alpha(data);
+        count = fileReader_lastID();
+    }
+    static void 명령_초기화(List data , String command , int count)
+    {
+        File directory = new File("db/wiseSaying");
+        if (directory.isDirectory()) 
+        {
+            File[] files = directory.listFiles();
+            if (files != null) 
+            { 
+                for (File file : files) { file.delete(); }
+            }
+        }
+        fileMaker_ID();
+        count = fileReader_lastID();
+        System.out.println("초기화 완료.");
+
     }
 }
 class Data 
